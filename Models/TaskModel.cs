@@ -1,6 +1,4 @@
-﻿using TasksToDo.Models.DTOs.Responses;
-
-namespace TasksToDo.Models;
+﻿namespace TasksToDo.Models;
 
 public class TaskModel
 {

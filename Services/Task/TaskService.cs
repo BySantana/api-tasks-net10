@@ -37,7 +37,7 @@ public class TaskService(AppDbContext context) : ITaskService
         return new TaskResponse(
             taskModel.Title,
             taskModel.Description,
-            new TagResponse(taskModel.Tag.Id, taskModel.Tag.Title));
+            null!);
     }
 
     public async Task<TaskResponse?> UpdateAsync(Guid id, TaskModel model)
@@ -49,20 +49,20 @@ public class TaskService(AppDbContext context) : ITaskService
 
         task.ChangeTask(model.Title, model.Description, model.TagId);
         await _context.SaveChangesAsync();
-        
+
         return new TaskResponse(task.Title, task.Description, null!);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
         var task = await _context.Tasks.FindAsync(id);
-        
-        if(task is null)
+
+        if (task is null)
             return false;
-        
+
         _context.Tasks.Remove(task);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
 }

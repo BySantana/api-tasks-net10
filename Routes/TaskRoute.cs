@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Models;
 using TasksToDo.Models.DTOs.Requests;
 using TasksToDo.Services.Task;
@@ -32,8 +33,14 @@ public static class TaskRoute
             : Results.Ok(task);
     }
 
-    private static async Task<IResult> Create([FromBody] CreateTaskRequest request, [FromServices] ITaskService service)
+    private static async Task<IResult> Create([FromBody] CreateTaskRequest request,
+        [FromServices] IValidator<CreateTaskRequest> validator, [FromServices] ITaskService service)
     {
+        var validationResult = await validator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
+
         var taskDto = new TaskModel(
             request.Title,
             request.TagId,
@@ -43,9 +50,14 @@ public static class TaskRoute
         return Results.Ok(task);
     }
 
-    private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTaskRequest request
-        , [FromServices] ITaskService service)
+    private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTaskRequest request,
+        [FromServices] IValidator<CreateTaskRequest> validator, [FromServices] ITaskService service)
     {
+        var validationResult = await validator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        
         var taskDto = new TaskModel(
             request.Title,
             request.TagId,
