@@ -13,6 +13,8 @@ public static class TagRoute
 
         group.MapGet("/", GetAll);
         group.MapPost("/", Create);
+        group.MapPut("/{id:guid}", Update);
+        group.MapDelete("/{id:guid}", Delete);
     }
     
     private static async Task<IResult> GetAll([FromServices] ITagService service)
@@ -27,5 +29,19 @@ public static class TagRoute
         
         var tag = await service.CreateAsync(tagModel);
         return Results.Created($"/tag/{tag.Id}", tag);
+    }
+    
+    private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTagRequest request, [FromServices] ITagService service)
+    {
+        var tagModel = new TagModel(request.Title);
+        
+        var tag = await service.UpdateAsync(id, tagModel);
+        return Results.Ok(tag);
+    }
+    
+    private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ITagService service)
+    {
+        var deleted = await service.DeleteAsync(id);
+        return deleted ? Results.NoContent() : Results.NotFound();
     }
 }

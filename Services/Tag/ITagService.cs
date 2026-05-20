@@ -7,6 +7,6 @@ public interface ITagService
 {
     public Task<IList<TagResponse>> GetAllAsync();
     public Task<TagResponse> CreateAsync(TagModel tag);
-    // public Task<TagModel> UpdateAsync(Guid id, TagModel tag);
-    // public Task<TagModel> DeleteAsync(Guid id);
+    public Task<TagResponse?> UpdateAsync(Guid id, TagModel tagModel);
+    public Task<bool> DeleteAsync(Guid id);
 }
