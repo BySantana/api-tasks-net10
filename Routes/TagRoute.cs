@@ -49,7 +49,7 @@ public static class TagRoute
         var tagModel = new TagModel(request.Title);
 
         var tag = await service.UpdateAsync(id, tagModel);
-        return Results.Ok(tag);
+        return Results.NoContent();
     }
 
     private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ITagService service)

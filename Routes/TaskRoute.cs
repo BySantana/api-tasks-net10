@@ -47,7 +47,7 @@ public static class TaskRoute
             request.Description);
 
         var task = await service.CreateAsync(taskDto);
-        return Results.Ok(task);
+        return Results.Created($"/task/Id", task);
     }
 
     private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTaskRequest request,
@@ -64,7 +64,7 @@ public static class TaskRoute
             request.Description);
 
         var task = await service.UpdateAsync(id, taskDto);
-        return Results.Ok(task);
+        return Results.NoContent();
     }
 
     private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ITaskService service)
