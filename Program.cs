@@ -1,9 +1,9 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TasksToDo.Common.Exceptions;
 using TasksToDo.Data;
 using TasksToDo.Routes;
-using TasksToDo.Services;
 using TasksToDo.Services.Tag;
 using TasksToDo.Services.Task;
 
@@ -15,6 +15,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
