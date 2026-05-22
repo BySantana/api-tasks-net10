@@ -48,7 +48,7 @@ public static class TagRoute
         
         var tagModel = new TagModel(request.Title);
 
-        var tag = await service.UpdateAsync(id, tagModel);
+        await service.UpdateAsync(id, tagModel);
         return Results.NoContent();
     }
 

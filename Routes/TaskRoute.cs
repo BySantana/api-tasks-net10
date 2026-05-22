@@ -63,7 +63,7 @@ public static class TaskRoute
             request.TagId,
             request.Description);
 
-        var task = await service.UpdateAsync(id, taskDto);
+        await service.UpdateAsync(id, taskDto);
         return Results.NoContent();
     }
 
