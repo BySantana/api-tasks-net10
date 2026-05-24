@@ -16,6 +16,16 @@ public class TagService(AppDbContext context) : ITagService
             .ToListAsync();
     }
 
+    public async Task<TagResponse?> GetByIdAsync(Guid id)
+    {
+        return await _context.Tags
+            .Where(x => x.Id == id)
+            .Select(x => new TagResponse(
+                x.Id,
+                x.Title))
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<TagResponse> CreateAsync(TagModel tagModel)
     {
         await _context.Tags.AddAsync(tagModel);
@@ -30,10 +40,10 @@ public class TagService(AppDbContext context) : ITagService
 
         if (tag == null)
             return null;
-        
+
         tag.ChangeTag(tagModel.Title);
         await _context.SaveChangesAsync();
-        
+
         return new TagResponse(tag.Id, tag.Title);
     }
 
@@ -43,7 +53,7 @@ public class TagService(AppDbContext context) : ITagService
 
         if (tag == null)
             return false;
-        
+
         _context.Tags.Remove(tag);
         await _context.SaveChangesAsync();
 

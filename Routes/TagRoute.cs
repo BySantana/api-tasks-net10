@@ -13,6 +13,7 @@ public static class TagRoute
         var group = app.MapGroup("/tag");
 
         group.MapGet("/", GetAll);
+        group.MapGet("/{id:guid}", GetById);
         group.MapPost("/", Create);
         group.MapPut("/{id:guid}", Update);
         group.MapDelete("/{id:guid}", Delete);
@@ -24,6 +25,12 @@ public static class TagRoute
         return Results.Ok(tags);
     }
 
+    private static async Task<IResult> GetById([FromRoute] Guid id, [FromServices] ITagService service)
+    {
+        var tags = await service.GetByIdAsync(id);
+        return Results.Ok(tags);
+    }
+    
     private static async Task<IResult> Create([FromBody] CreateTagRequest request,
         [FromServices] IValidator<CreateTagRequest> validator, [FromServices] ITagService service)
     {
