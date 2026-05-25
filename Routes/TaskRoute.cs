@@ -19,9 +19,9 @@ public static class TaskRoute
         group.MapDelete("/{id:guid}", Delete);
     }
 
-    private static async Task<IResult> GetAll([FromServices] ITaskService service)
+    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ITaskService service)
     {
-        var tasks = await service.GetAllAsync();
+        var tasks = await service.GetAllAsync(request);
         return Results.Ok(tasks);
     }
 
@@ -57,7 +57,7 @@ public static class TaskRoute
 
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
-        
+
         var taskDto = new TaskModel(
             request.Title,
             request.TagId,

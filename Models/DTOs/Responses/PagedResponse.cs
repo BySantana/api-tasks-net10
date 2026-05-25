@@ -2,7 +2,7 @@
 
 public record PagedResponse<T>(
     IEnumerable<T> Data,
-    int Page,
+    int PageNumber,
     int PageSize,
     int TotalCount,
     int TotalPages);

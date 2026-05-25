@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TasksToDo.Data;
 using TasksToDo.Models;
+using TasksToDo.Models.DTOs.Requests;
 using TasksToDo.Models.DTOs.Responses;
 
 namespace TasksToDo.Services.Task;
@@ -9,13 +10,26 @@ public class TaskService(AppDbContext context) : ITaskService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IList<TaskResponse>> GetAllAsync()
+    public async Task<PagedResponse<TaskResponse>> GetAllAsync(PagedRequest request)
     {
-        return await _context.Tasks
+        var query = _context.Tasks.AsQueryable();
+ 
+        var totalCount = await query.CountAsync();
+        
+        var data = await query
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(x =>
                 new TaskResponse(x.Title, x.Description,
                     new TagResponse(x.Tag.Id, x.Tag.Title)))
             .ToListAsync();
+        
+        return new PagedResponse<TaskResponse>(
+            data,
+            request.PageNumber,
+            request.PageSize,
+            totalCount,
+            (int)Math.Ceiling(totalCount / (double)request.PageSize));
     }
 
     public async Task<TaskResponse?> GetByIdAsync(Guid id)
