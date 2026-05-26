@@ -19,9 +19,9 @@ public static class TagRoute
         group.MapDelete("/{id:guid}", Delete);
     }
 
-    private static async Task<IResult> GetAll([FromServices] ITagService service)
+    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ITagService service)
     {
-        var tags = await service.GetAllAsync();
+        var tags = await service.GetAllAsync(request);
         return Results.Ok(tags);
     }
 

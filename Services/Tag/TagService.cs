@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TasksToDo.Data;
 using TasksToDo.Models;
+using TasksToDo.Models.DTOs.Requests;
 using TasksToDo.Models.DTOs.Responses;
 
 namespace TasksToDo.Services.Tag;
@@ -9,11 +10,24 @@ public class TagService(AppDbContext context) : ITagService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IList<TagResponse>> GetAllAsync()
+    public async Task<PagedResponse<TagResponse>> GetAllAsync(PagedRequest request)
     {
-        return await _context.Tags
+        var query = _context.Tags.AsQueryable();
+
+        var totalCount = await query.CountAsync();
+
+        var data = await _context.Tags
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(c => new TagResponse(c.Id, c.Title))
             .ToListAsync();
+
+        return new PagedResponse<TagResponse>(
+            data,
+            request.PageNumber,
+            request.PageSize, 
+            totalCount,
+            (int)Math.Ceiling(totalCount / (double)request.PageSize));
     }
 
     public async Task<TagResponse?> GetByIdAsync(Guid id)
