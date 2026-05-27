@@ -25,6 +25,7 @@ public class TaskService(AppDbContext context) : ITaskService
         var data = await query
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
+            .Include(t => t.Tags)
             .Select(x => Project(x))
             .ToListAsync();
 
@@ -76,5 +77,37 @@ public class TaskService(AppDbContext context) : ITaskService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<TaskResponse> AddTagAsync(Guid taskId, Guid tagId)
+    {
+        var task = await _context.Tasks
+                       .Include(t => t.Tags)
+                       .FirstOrDefaultAsync(t => t.Id == taskId)
+                   ?? throw new KeyNotFoundException("Task not found");
+
+        var tag = await _context.Tags.FindAsync(tagId)
+                  ?? throw new KeyNotFoundException("Tag not found");
+
+        task.AddTag(tag);
+        await _context.SaveChangesAsync();
+        
+        return Project(task);
+    }
+
+    public async Task<TaskResponse> RemoveTagAsync(Guid taskId, Guid tagId)
+    {
+        var task = await _context.Tasks
+                       .Include(t => t.Tags)
+                       .FirstOrDefaultAsync(t => t.Id == taskId)
+                   ?? throw new KeyNotFoundException("Task not found");
+
+        var tag = await _context.Tags.FindAsync(tagId)
+                  ?? throw new KeyNotFoundException("Tag not found");
+
+        task.RemoveTag(tag);
+        await _context.SaveChangesAsync();
+        
+        return Project(task);
     }
 }

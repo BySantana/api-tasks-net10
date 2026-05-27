@@ -11,4 +11,6 @@ public interface ITaskService
     public Task<TaskResponse> CreateAsync(TaskModel model);
     public Task<TaskResponse?> UpdateAsync(Guid id, TaskModel model);
     public Task<bool> DeleteAsync(Guid id);
+    public Task<TaskResponse> AddTagAsync(Guid taskId, Guid tagId);
+    public Task<TaskResponse> RemoveTagAsync(Guid taskId, Guid tagId);
 }

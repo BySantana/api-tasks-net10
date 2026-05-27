@@ -17,6 +17,8 @@ public static class TaskRoute
         group.MapPost("/", Create);
         group.MapPut("/{id:guid}", Update);
         group.MapDelete("/{id:guid}", Delete);
+        group.MapPut("/Tag/Add/{taskId:guid}&{tagId:guid}", AddTag);
+        group.MapPut("/Tag/Remove/{taskId:guid}&{tagId:guid}", RemoveTag);
     }
 
     private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ITaskService service)
@@ -69,5 +71,19 @@ public static class TaskRoute
     {
         var deleted = await service.DeleteAsync(id);
         return deleted ? Results.NoContent() : Results.NotFound();
+    }
+
+    private static async Task<IResult> RemoveTag([FromRoute] Guid taskId, [FromRoute] Guid tagId,
+        [FromServices] ITaskService service)
+    {
+        var task = await service.RemoveTagAsync(taskId, tagId);
+        return Results.Ok(task);
+    }
+    
+    private static async Task<IResult> AddTag([FromRoute] Guid taskId, [FromRoute] Guid tagId,
+        [FromServices] ITaskService service)
+    {
+        var task = await service.AddTagAsync(taskId, tagId);
+        return Results.Ok(task);
     }
 }
