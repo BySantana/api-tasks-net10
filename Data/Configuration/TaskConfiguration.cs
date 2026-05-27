@@ -4,11 +4,11 @@ using TasksToDo.Models;
 
 namespace TasksToDo.Data.Configuration;
 
-public class TaskConfiguration : IEntityTypeConfiguration<TaskModel>
+public class TaskConfiguration : BaseEntityConfiguration<TaskModel>
 {
-    public void Configure(EntityTypeBuilder<TaskModel> builder)
+    public override void Configure(EntityTypeBuilder<TaskModel> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
         
         builder.Property(i => i.Title)
             .IsRequired()

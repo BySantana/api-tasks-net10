@@ -1,17 +1,17 @@
-﻿namespace TasksToDo.Models;
+﻿using TasksToDo.Models.Base;
 
-public class TagModel
+namespace TasksToDo.Models;
+
+public class TagModel : BaseEntity
 {
     public TagModel(string title)
     {
         if(string.IsNullOrWhiteSpace(title))
             throw new ArgumentNullException(nameof(title));
-        
-        Id = Guid.NewGuid();
+
         Title = title;
     }
     
-    public Guid Id { get; init; }
     public string Title { get; private set; }
 
     private readonly List<TaskModel> _tasks = [];
@@ -23,5 +23,6 @@ public class TagModel
             throw new ArgumentNullException(nameof(title));
         
         Title = title;
+        SetUpdatedAt();
     }
 }

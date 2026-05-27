@@ -1,6 +1,8 @@
-﻿namespace TasksToDo.Models;
+﻿using TasksToDo.Models.Base;
 
-public class TaskModel
+namespace TasksToDo.Models;
+
+public class TaskModel : BaseEntity
 {
     public TaskModel(string title, Guid tagId, string? description)
     {
@@ -10,12 +12,10 @@ public class TaskModel
         if(Guid.Empty == tagId)
             throw new ArgumentNullException(nameof(tagId));
         
-        Id = Guid.NewGuid();
         TagId = tagId;
         Title = title;
         Description = description;
     }
-    public Guid Id { get; init; }
     public string Title { get; private set; }
     public string? Description { get; private set; }
 
@@ -32,6 +32,7 @@ public class TaskModel
         Title = title;
         Description = description;
         TagId = tagId;
+        SetUpdatedAt();
     }
     
     #endregion

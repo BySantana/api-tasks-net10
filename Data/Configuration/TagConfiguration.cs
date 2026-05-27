@@ -4,11 +4,11 @@ using TasksToDo.Models;
 
 namespace TasksToDo.Data.Configuration;
 
-public class TagConfiguration : IEntityTypeConfiguration<TagModel>
+public class TagConfiguration : BaseEntityConfiguration<TagModel>
 {
-    public void Configure(EntityTypeBuilder<TagModel> builder)
+    public override void Configure(EntityTypeBuilder<TagModel> builder)
     {
-        builder.HasKey(i => i.Id);
+        base.Configure(builder);
         
         builder.Property(i => i.Title)
             .IsRequired()
