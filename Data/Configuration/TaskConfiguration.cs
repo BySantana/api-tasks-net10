@@ -17,9 +17,11 @@ public class TaskConfiguration : BaseEntityConfiguration<TaskModel>
         builder.Property(i => i.Description)
             .HasMaxLength(500);
         
-        builder.HasOne(i => i.Tag)
+        builder.HasMany(i => i.Tags)
             .WithMany(t => t.Tasks)
-            .HasForeignKey(i => i.TagId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .UsingEntity(j => j.ToTable("TaskTags")); 
+        
+        builder.Navigation(t => t.Tags)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -4,36 +4,41 @@ namespace TasksToDo.Models;
 
 public class TaskModel : BaseEntity
 {
-    public TaskModel(string title, Guid tagId, string? description)
+    public TaskModel(string title, string? description)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentNullException(nameof(title));
-        
-        if(Guid.Empty == tagId)
-            throw new ArgumentNullException(nameof(tagId));
-        
-        TagId = tagId;
+
         Title = title;
         Description = description;
     }
+
     public string Title { get; private set; }
     public string? Description { get; private set; }
 
-    public Guid TagId { get; private set; }
-    public TagModel Tag { get; private set; } = null!;
-    
+    private readonly List<TagModel> _tags = [];
+    public IReadOnlyCollection<TagModel> Tags => _tags.AsReadOnly();
+
     #region Methods
 
-    public void ChangeTask(string title, string? description, Guid tagId)
+    public void ChangeTask(string title, string? description)
     {
-        if(string.IsNullOrWhiteSpace(title))
+        if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentNullException(nameof(title));
-        
+
         Title = title;
         Description = description;
-        TagId = tagId;
         SetUpdatedAt();
     }
-    
+
+    public void AddTag(TagModel tag)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+        if (!_tags.Contains(tag))
+            _tags.Add(tag);
+    }
+
+    public void RemoveTag(TagModel tag) => _tags.Remove(tag);
+
     #endregion
 }

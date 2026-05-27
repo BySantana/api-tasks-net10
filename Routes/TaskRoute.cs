@@ -43,7 +43,6 @@ public static class TaskRoute
 
         var taskDto = new TaskModel(
             request.Title,
-            request.TagId,
             request.Description);
 
         var task = await service.CreateAsync(taskDto);
@@ -60,7 +59,6 @@ public static class TaskRoute
 
         var taskDto = new TaskModel(
             request.Title,
-            request.TagId,
             request.Description);
 
         await service.UpdateAsync(id, taskDto);

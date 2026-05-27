@@ -17,6 +17,21 @@ namespace TasksToDo.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
+            modelBuilder.Entity("TagModelTaskModel", b =>
+                {
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TagsId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("TaskTags", (string)null);
+                });
+
             modelBuilder.Entity("TasksToDo.Models.TagModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -52,9 +67,6 @@ namespace TasksToDo.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -65,25 +77,22 @@ namespace TasksToDo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TagId");
-
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("TasksToDo.Models.TaskModel", b =>
+            modelBuilder.Entity("TagModelTaskModel", b =>
                 {
-                    b.HasOne("TasksToDo.Models.TagModel", "Tag")
-                        .WithMany("Tasks")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("TasksToDo.Models.TagModel", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("TasksToDo.Models.TagModel", b =>
-                {
-                    b.Navigation("Tasks");
+                    b.HasOne("TasksToDo.Models.TaskModel", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

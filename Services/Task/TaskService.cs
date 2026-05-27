@@ -10,20 +10,24 @@ public class TaskService(AppDbContext context) : ITaskService
 {
     private readonly AppDbContext _context = context;
 
+    private static TaskResponse Project(TaskModel t) => new(
+        t.Title,
+        t.Description,
+        t.CreatedAt,
+        t.Tags.Select(tag => new TagResponse(tag.Id, tag.Title)));
+
     public async Task<PagedResponse<TaskResponse>> GetAllAsync(PagedRequest request)
     {
         var query = _context.Tasks.AsQueryable();
- 
+
         var totalCount = await query.CountAsync();
-        
+
         var data = await query
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
-            .Select(x =>
-                new TaskResponse(x.Title, x.Description,
-                    new TagResponse(x.Tag.Id, x.Tag.Title)))
+            .Select(x => Project(x))
             .ToListAsync();
-        
+
         return new PagedResponse<TaskResponse>(
             data,
             request.PageNumber,
@@ -36,10 +40,7 @@ public class TaskService(AppDbContext context) : ITaskService
     {
         return await _context.Tasks
             .Where(x => x.Id == id)
-            .Select(x => new TaskResponse(
-                x.Title,
-                x.Description,
-                new TagResponse(x.Tag.Id, x.Tag.Title)))
+            .Select(x => Project(x))
             .FirstOrDefaultAsync();
     }
 
@@ -48,10 +49,7 @@ public class TaskService(AppDbContext context) : ITaskService
         await _context.Tasks.AddAsync(taskModel);
         await _context.SaveChangesAsync();
 
-        return new TaskResponse(
-            taskModel.Title,
-            taskModel.Description,
-            null!);
+        return Project(taskModel);
     }
 
     public async Task<TaskResponse?> UpdateAsync(Guid id, TaskModel model)
@@ -61,10 +59,10 @@ public class TaskService(AppDbContext context) : ITaskService
         if (task is null)
             return null;
 
-        task.ChangeTask(model.Title, model.Description, model.TagId);
+        task.ChangeTask(model.Title, model.Description);
         await _context.SaveChangesAsync();
 
-        return new TaskResponse(task.Title, task.Description, null!);
+        return Project(task);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
