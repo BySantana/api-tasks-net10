@@ -14,7 +14,7 @@ public class TaskService(AppDbContext context) : ITaskService
         t.Title,
         t.Description,
         t.CreatedAt,
-        t.Tags.Select(tag => new TagResponse(tag.Id, tag.Title)));
+        t.Tags.Select(tag => new TagResponse(tag.Id, tag.Title, tag.CreatedAt)));
 
     public async Task<PagedResponse<TaskResponse>> GetAllAsync(PagedRequest request)
     {
@@ -27,6 +27,7 @@ public class TaskService(AppDbContext context) : ITaskService
             .Take(request.PageSize)
             .Include(t => t.Tags)
             .Select(x => Project(x))
+            .OrderBy(o => o.CreatedAt)
             .ToListAsync();
 
         return new PagedResponse<TaskResponse>(

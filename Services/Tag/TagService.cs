@@ -9,6 +9,10 @@ namespace TasksToDo.Services.Tag;
 public class TagService(AppDbContext context) : ITagService
 {
     private readonly AppDbContext _context = context;
+    private static TagResponse Project(TagModel t) => new(
+        t.Id,
+        t.Title,
+        t.CreatedAt);
 
     public async Task<PagedResponse<TagResponse>> GetAllAsync(PagedRequest request)
     {
@@ -19,7 +23,8 @@ public class TagService(AppDbContext context) : ITagService
         var data = await _context.Tags
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
-            .Select(c => new TagResponse(c.Id, c.Title))
+            .Select(c => Project(c))
+            .OrderBy(o => o.CreatedAt)
             .ToListAsync();
 
         return new PagedResponse<TagResponse>(
@@ -34,9 +39,7 @@ public class TagService(AppDbContext context) : ITagService
     {
         return await _context.Tags
             .Where(x => x.Id == id)
-            .Select(x => new TagResponse(
-                x.Id,
-                x.Title))
+            .Select(x => Project(x))
             .FirstOrDefaultAsync();
     }
 
@@ -45,7 +48,7 @@ public class TagService(AppDbContext context) : ITagService
         await _context.Tags.AddAsync(tagModel);
         await _context.SaveChangesAsync();
 
-        return new TagResponse(tagModel.Id, tagModel.Title);
+        return Project(tagModel);
     }
 
     public async Task<TagResponse?> UpdateAsync(Guid id, TagModel tagModel)
@@ -58,7 +61,7 @@ public class TagService(AppDbContext context) : ITagService
         tag.ChangeTag(tagModel.Title);
         await _context.SaveChangesAsync();
 
-        return new TagResponse(tag.Id, tag.Title);
+        return Project(tag);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
