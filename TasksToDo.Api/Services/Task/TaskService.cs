@@ -23,11 +23,11 @@ public class TaskService(AppDbContext context) : ITaskService
         var totalCount = await query.CountAsync();
 
         var data = await query
+            .OrderBy(o => o.CreatedAt)
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .Include(t => t.Tags)
             .Select(x => Project(x))
-            .OrderBy(o => o.CreatedAt)
             .ToListAsync();
 
         return new PagedResponse<TaskResponse>(

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TasksToDo.Data;
 
@@ -10,9 +11,11 @@ using TasksToDo.Data;
 namespace TasksToDo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260527005224_ManyToMany")]
+    partial class ManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
@@ -32,7 +35,7 @@ namespace TasksToDo.Migrations
                     b.ToTable("TaskTags", (string)null);
                 });
 
-            modelBuilder.Entity("TasksToDo.Models.TagModel", b =>
+            modelBuilder.Entity("TasksToDo.Api.Models.TagModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +57,7 @@ namespace TasksToDo.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("TasksToDo.Models.TaskModel", b =>
+            modelBuilder.Entity("TasksToDo.Api.Models.TaskModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,13 +85,13 @@ namespace TasksToDo.Migrations
 
             modelBuilder.Entity("TagModelTaskModel", b =>
                 {
-                    b.HasOne("TasksToDo.Models.TagModel", null)
+                    b.HasOne("TasksToDo.Api.Models.TagModel", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TasksToDo.Models.TaskModel", null)
+                    b.HasOne("TasksToDo.Api.Models.TaskModel", null)
                         .WithMany()
                         .HasForeignKey("TasksId")
                         .OnDelete(DeleteBehavior.Cascade)

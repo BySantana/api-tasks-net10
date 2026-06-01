@@ -10,8 +10,5 @@ public class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
         RuleFor(request => request.Title)
             .NotEmpty().WithMessage("Title is required")
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters");
-
-        RuleFor(request => request.TagId)
-            .NotEmpty().WithMessage("TagId is required");
     }
 }

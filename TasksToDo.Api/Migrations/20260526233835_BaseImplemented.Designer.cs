@@ -11,8 +11,8 @@ using TasksToDo.Data;
 namespace TasksToDo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260527005224_ManyToMany")]
-    partial class ManyToMany
+    [Migration("20260526233835_BaseImplemented")]
+    partial class BaseImplemented
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,22 +20,7 @@ namespace TasksToDo.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
-            modelBuilder.Entity("TagModelTaskModel", b =>
-                {
-                    b.Property<Guid>("TagsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("TasksId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("TagsId", "TasksId");
-
-                    b.HasIndex("TasksId");
-
-                    b.ToTable("TaskTags", (string)null);
-                });
-
-            modelBuilder.Entity("TasksToDo.Models.TagModel", b =>
+            modelBuilder.Entity("TasksToDo.Api.Models.TagModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +42,7 @@ namespace TasksToDo.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("TasksToDo.Models.TaskModel", b =>
+            modelBuilder.Entity("TasksToDo.Api.Models.TaskModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,6 +55,9 @@ namespace TasksToDo.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -80,22 +68,25 @@ namespace TasksToDo.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TagId");
+
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("TagModelTaskModel", b =>
+            modelBuilder.Entity("TasksToDo.Api.Models.TaskModel", b =>
                 {
-                    b.HasOne("TasksToDo.Models.TagModel", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("TasksToDo.Api.Models.TagModel", "Tag")
+                        .WithMany("Tasks")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TasksToDo.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("TasksToDo.Api.Models.TagModel", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }
