@@ -1,3 +1,6 @@
 <Solution>
   <Project Path="TasksToDo.Api/TasksToDo.Api.csproj" />
+  <Project Path="TasksToDo.Application/TasksToDo.Application.csproj" />
+  <Project Path="TasksToDo.Domain/TasksToDo.Domain.csproj" />
+  <Project Path="TasksToDo.Infrastructure/TasksToDo.Infrastructure.csproj" />
 </Solution>

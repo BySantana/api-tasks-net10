@@ -1,11 +1,12 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TasksToDo.Application.Interfaces.Services;
+using TasksToDo.Application.Services.Tag;
+using TasksToDo.Application.Services.Task;
 using TasksToDo.Common.Exceptions;
-using TasksToDo.Data;
+using TasksToDo.Infrastructure.Data;
 using TasksToDo.Routes;
-using TasksToDo.Services.Tag;
-using TasksToDo.Services.Task;
 
 var builder = WebApplication.CreateBuilder(args);
 

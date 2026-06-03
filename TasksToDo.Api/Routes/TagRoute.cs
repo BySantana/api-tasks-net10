@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using TasksToDo.Models;
-using TasksToDo.Models.DTOs.Requests;
-using TasksToDo.Services.Tag;
+using TasksToDo.Application.DTOs.Requests;
+using TasksToDo.Application.Interfaces.Services;
+using TasksToDo.Domain.Models;
 
 namespace TasksToDo.Routes;
 
