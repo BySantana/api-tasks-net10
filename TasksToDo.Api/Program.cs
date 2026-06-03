@@ -4,6 +4,7 @@ using Scalar.AspNetCore;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Tag;
 using TasksToDo.Application.Services.Task;
+using TasksToDo.Application.Validators;
 using TasksToDo.Common.Exceptions;
 using TasksToDo.Infrastructure.Data;
 using TasksToDo.Routes;
@@ -20,7 +21,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTagRequestValidator>();
 
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITagService, TagService>();
