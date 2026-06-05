@@ -5,6 +5,7 @@ namespace TasksToDo.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    public DbSet<UserModel> Users => Set<UserModel>();
     public DbSet<TaskModel> Tasks => Set<TaskModel>();
     public DbSet<TagModel> Tags => Set<TagModel>();
 
