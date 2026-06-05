@@ -22,10 +22,10 @@ public class TagService(AppDbContext context) : ITagService
         var totalCount = await query.CountAsync();
 
         var data = await _context.Tags
+            .OrderBy(o => o.CreatedAt)
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .Select(c => Project(c))
-            .OrderBy(o => o.CreatedAt)
             .ToListAsync();
 
         return new PagedResponse<TagResponse>(

@@ -10,7 +10,7 @@ public static class TagRoute
 {
     public static void MapTagRoute(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/tag");
+        var group = app.MapGroup("/tag").RequireAuthorization();
 
         group.MapGet("/", GetAll);
         group.MapGet("/{id:guid}", GetById);
