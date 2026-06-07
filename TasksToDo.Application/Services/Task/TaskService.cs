@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.DTOs.Responses;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Domain.Models;
-using TasksToDo.Infrastructure.Data;
 
 namespace TasksToDo.Application.Services.Task;
 
-public class TaskService(AppDbContext context) : ITaskService
+public class TaskService(IApplicationDbContext context) : ITaskService
 {
-    private readonly AppDbContext _context = context;
+    private readonly IApplicationDbContext _context = context;
 
     private static TaskResponse Project(TaskModel t) => new(
         t.Title,

@@ -4,16 +4,16 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.DTOs.Responses;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Domain.Models;
-using TasksToDo.Infrastructure.Data;
 
 namespace TasksToDo.Application.Services.Auth;
 
-public class AuthService(AppDbContext context, IConfiguration configuration) : IAuthService
+public class AuthService(IApplicationDbContext context, IConfiguration configuration) : IAuthService
 {
-    private readonly AppDbContext _context = context;
+    private readonly IApplicationDbContext _context = context;
     private readonly IConfiguration _configuration = configuration;
 
     public async Task<TokenResponse> LoginAsync(UserModel request)

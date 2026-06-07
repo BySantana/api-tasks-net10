@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
+using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Auth;
 using TasksToDo.Application.Services.Tag;
@@ -55,6 +56,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateTagRequestValidator>(
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IApplicationDbContext, AppDbContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

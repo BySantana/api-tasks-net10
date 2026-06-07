@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.DTOs.Responses;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Domain.Models;
-using TasksToDo.Infrastructure.Data;
 
 namespace TasksToDo.Application.Services.Tag;
 
-public class TagService(AppDbContext context) : ITagService
+public class TagService(IApplicationDbContext context) : ITagService
 {
-    private readonly AppDbContext _context = context;
+    private readonly IApplicationDbContext _context = context;
     private static TagResponse Project(TagModel t) => new(
         t.Id,
         t.Title,
