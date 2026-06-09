@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using TasksToDo.Application.Abstractions;
+using TasksToDo.Application.Abstractions.Behaviors;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Auth;
 using TasksToDo.Application.Services.Tag;
@@ -43,6 +44,16 @@ builder.Services.AddOpenApi(options =>
         return Task.CompletedTask;
     });
 });
+
+builder.Services.AddMediatR(cfg =>
+{
+    var appAssembly = typeof(ValidationBehavior<,>).Assembly;
+    cfg.RegisterServicesFromAssembly(appAssembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssembly(
+    typeof(ValidationBehavior<,>).Assembly);
 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));

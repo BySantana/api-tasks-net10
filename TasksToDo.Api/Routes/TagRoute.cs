@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.Interfaces.Services;
+using TasksToDo.Application.Services.Tag.Commands.CreateTag;
+using TasksToDo.Application.Services.Tag.Queries.GetAllTags;
 using TasksToDo.Domain.Models;
 
 namespace TasksToDo.Routes;
@@ -13,15 +16,18 @@ public static class TagRoute
         var group = app.MapGroup("/tag").RequireAuthorization();
 
         group.MapGet("/", GetAll);
-        group.MapGet("/{id:guid}", GetById);
+        group.MapGet("/{id:guid}", GetById).WithName("GetTagById");
+        ;
         group.MapPost("/", Create);
         group.MapPut("/{id:guid}", Update);
         group.MapDelete("/{id:guid}", Delete);
     }
 
-    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ITagService service)
+    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ISender sender,
+        CancellationToken ct)
     {
-        var tags = await service.GetAllAsync(request);
+        var req = new GetAllTagsQuery(request);
+        var tags = await sender.Send(req, ct);
         return Results.Ok(tags);
     }
 
@@ -30,19 +36,12 @@ public static class TagRoute
         var tags = await service.GetByIdAsync(id);
         return Results.Ok(tags);
     }
-    
-    private static async Task<IResult> Create([FromBody] CreateTagRequest request,
-        [FromServices] IValidator<CreateTagRequest> validator, [FromServices] ITagService service)
+
+    private static async Task<IResult> Create([FromBody] CreateTagCommand command,
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        
-        var tagModel = new TagModel(request.Title);
-
-        var tag = await service.CreateAsync(tagModel);
-        return Results.Created($"/tag/{tag.Id}", tag);
+        var id = await sender.Send(command, ct);
+        return Results.CreatedAtRoute("GetTagById", new { id });
     }
 
     private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTagRequest request,
@@ -52,7 +51,7 @@ public static class TagRoute
 
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
-        
+
         var tagModel = new TagModel(request.Title);
 
         await service.UpdateAsync(id, tagModel);

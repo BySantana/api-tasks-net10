@@ -31,7 +31,7 @@ public class TagService(IApplicationDbContext context) : ITagService
         return new PagedResponse<TagResponse>(
             data,
             request.PageNumber,
-            request.PageSize, 
+            request.PageSize,
             totalCount,
             (int)Math.Ceiling(totalCount / (double)request.PageSize));
     }
