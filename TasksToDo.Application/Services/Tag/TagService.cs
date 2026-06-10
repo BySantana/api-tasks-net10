@@ -15,27 +15,6 @@ public class TagService(IApplicationDbContext context) : ITagService
         t.Title,
         t.CreatedAt);
 
-    public async Task<PagedResponse<TagResponse>> GetAllAsync(PagedRequest request)
-    {
-        var query = _context.Tags.AsQueryable();
-
-        var totalCount = await query.CountAsync();
-
-        var data = await _context.Tags
-            .OrderBy(o => o.CreatedAt)
-            .Skip((request.PageNumber - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .Select(c => Project(c))
-            .ToListAsync();
-
-        return new PagedResponse<TagResponse>(
-            data,
-            request.PageNumber,
-            request.PageSize,
-            totalCount,
-            (int)Math.Ceiling(totalCount / (double)request.PageSize));
-    }
-
     public async Task<TagResponse?> GetByIdAsync(Guid id)
     {
         return await _context.Tags

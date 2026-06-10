@@ -2,21 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.DTOs.Responses;
-using TasksToDo.Domain.Models;
+using TasksToDo.Application.Services.Tag.Utils;
 
 namespace TasksToDo.Application.Services.Tag.Queries.GetAllTags;
 
-public class GetAllTagsHandler : IRequestHandler<GetAllTagsQuery, PagedResponse<TagResponse>>
+public sealed class GetAllTagsHandler : IRequestHandler<GetAllTagsQuery, PagedResponse<TagResponse>>
 {
     private readonly IApplicationDbContext _context;
 
     public GetAllTagsHandler(IApplicationDbContext context)
         => _context = context;
-    
-    private static TagResponse Project(TagModel t) => new(
-        t.Id,
-        t.Title,
-        t.CreatedAt);
 
     public async Task<PagedResponse<TagResponse>> Handle(
         GetAllTagsQuery query, CancellationToken ct)
@@ -29,7 +24,7 @@ public class GetAllTagsHandler : IRequestHandler<GetAllTagsQuery, PagedResponse<
             .OrderBy(o => o.CreatedAt)
             .Skip((query.PagedRequest.PageNumber - 1) * query.PagedRequest.PageSize)
             .Take(query.PagedRequest.PageSize)
-            .Select(c => Project(c))
+            .Select(c => MapResponse.Project(c))
             .ToListAsync(ct);
 
         return new PagedResponse<TagResponse>(

@@ -5,6 +5,7 @@ using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Tag.Commands.CreateTag;
 using TasksToDo.Application.Services.Tag.Queries.GetAllTags;
+using TasksToDo.Application.Services.Tag.Queries.GetTagById;
 using TasksToDo.Domain.Models;
 
 namespace TasksToDo.Routes;
@@ -31,9 +32,10 @@ public static class TagRoute
         return Results.Ok(tags);
     }
 
-    private static async Task<IResult> GetById([FromRoute] Guid id, [FromServices] ITagService service)
+    private static async Task<IResult> GetById([FromRoute] Guid id, [FromServices] ISender sender, CancellationToken ct)
     {
-        var tags = await service.GetByIdAsync(id);
+        var req = new GetTagByIdQuery(id);
+        var tags = await sender.Send(req, ct);
         return Results.Ok(tags);
     }
 
