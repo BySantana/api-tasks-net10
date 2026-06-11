@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Tag.Commands.CreateTag;
+using TasksToDo.Application.Services.Tag.Commands.UpdateTag;
 using TasksToDo.Application.Services.Tag.Queries.GetAllTags;
 using TasksToDo.Application.Services.Tag.Queries.GetTagById;
 using TasksToDo.Domain.Models;
@@ -14,7 +15,7 @@ public static class TagRoute
 {
     public static void MapTagRoute(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/tag").RequireAuthorization();
+        var group = app.MapGroup("/tag"); //.RequireAuthorization();
 
         group.MapGet("/", GetAll);
         group.MapGet("/{id:guid}", GetById).WithName("GetTagById");
@@ -47,16 +48,10 @@ public static class TagRoute
     }
 
     private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTagRequest request,
-        [FromServices] IValidator<CreateTagRequest> validator, [FromServices] ITagService service)
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
-            return Results.ValidationProblem(validationResult.ToDictionary());
-
-        var tagModel = new TagModel(request.Title);
-
-        await service.UpdateAsync(id, tagModel);
+        var command = new UpdateTagCommand(id, request.Title);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 
