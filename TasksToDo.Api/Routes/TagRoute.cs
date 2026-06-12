@@ -1,13 +1,11 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
-using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Tag.Commands.CreateTag;
+using TasksToDo.Application.Services.Tag.Commands.DeleteTag;
 using TasksToDo.Application.Services.Tag.Commands.UpdateTag;
 using TasksToDo.Application.Services.Tag.Queries.GetAllTags;
 using TasksToDo.Application.Services.Tag.Queries.GetTagById;
-using TasksToDo.Domain.Models;
 
 namespace TasksToDo.Routes;
 
@@ -19,7 +17,6 @@ public static class TagRoute
 
         group.MapGet("/", GetAll);
         group.MapGet("/{id:guid}", GetById).WithName("GetTagById");
-        ;
         group.MapPost("/", Create);
         group.MapPut("/{id:guid}", Update);
         group.MapDelete("/{id:guid}", Delete);
@@ -55,9 +52,11 @@ public static class TagRoute
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ITagService service)
+    private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ISender sender, CancellationToken ct)
     {
-        var deleted = await service.DeleteAsync(id);
+        var request = new DeleteTagCommand(id);
+        var deleted = await sender.Send(request, ct);
+
         return deleted ? Results.NoContent() : Results.NotFound();
     }
 }

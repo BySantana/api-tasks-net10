@@ -9,7 +9,6 @@ using TasksToDo.Application.Abstractions;
 using TasksToDo.Application.Abstractions.Behaviors;
 using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Auth;
-using TasksToDo.Application.Services.Tag;
 using TasksToDo.Application.Services.Task;
 using TasksToDo.Application.Validators;
 using TasksToDo.Common.Exceptions;
@@ -65,7 +64,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskRequestValidator>
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTagRequestValidator>();
 
 builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IApplicationDbContext, AppDbContext>();
 
