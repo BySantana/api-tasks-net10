@@ -3,7 +3,7 @@ using TasksToDo.Application.DTOs.Requests;
 
 namespace TasksToDo.Application.Services.Tag.Commands.CreateTag;
 
-public sealed class CreateTagValidator : AbstractValidator<CreateTagRequest>
+public sealed class CreateTagValidator : AbstractValidator<CreateTagCommand>
 {
     public CreateTagValidator()
     {

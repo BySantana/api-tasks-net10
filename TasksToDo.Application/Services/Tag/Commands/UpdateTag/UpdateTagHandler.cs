@@ -19,6 +19,6 @@ public sealed class UpdateTagHandler(IApplicationDbContext context) : IRequestHa
         tag.ChangeTag(cmd.Title);
         await _context.SaveChangesAsync(ct);
 
-        return MapResponse.Project(tag);
+        return MapTagResponse.Project(tag);
     }
 }

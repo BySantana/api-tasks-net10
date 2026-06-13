@@ -24,7 +24,7 @@ public sealed class GetAllTagsHandler : IRequestHandler<GetAllTagsQuery, PagedRe
             .OrderBy(o => o.CreatedAt)
             .Skip((query.PagedRequest.PageNumber - 1) * query.PagedRequest.PageSize)
             .Take(query.PagedRequest.PageSize)
-            .Select(c => MapResponse.Project(c))
+            .Select(c => MapTagResponse.Project(c))
             .ToListAsync(ct);
 
         return new PagedResponse<TagResponse>(

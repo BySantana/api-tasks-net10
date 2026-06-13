@@ -17,7 +17,7 @@ public sealed class GetTagByIdHandler : IRequestHandler<GetTagByIdQuery, TagResp
     {
         return await _context.Tags
             .Where(x => x.Id == request.Id)
-            .Select(x => MapResponse.Project(x))
+            .Select(x => MapTagResponse.Project(x))
             .FirstOrDefaultAsync(ct);
     }
 }

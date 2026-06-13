@@ -1,7 +1,11 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.Interfaces.Services;
+using TasksToDo.Application.Services.Task.Commands.CreateTask;
+using TasksToDo.Application.Services.Task.Commands.DeleteTask;
+using TasksToDo.Application.Services.Task.Commands.UpdateTask;
 using TasksToDo.Domain.Models;
 
 namespace TasksToDo.Routes;
@@ -13,7 +17,7 @@ public static class TaskRoute
         var group = app.MapGroup("/task");
 
         group.MapGet("/", GetAll);
-        group.MapGet("/{id:guid}", GetById);
+        group.MapGet("/{id:guid}", GetById).WithName("GetTaskById");
         group.MapPost("/", Create);
         group.MapPut("/{id:guid}", Update);
         group.MapDelete("/{id:guid}", Delete);
@@ -35,41 +39,28 @@ public static class TaskRoute
             : Results.Ok(task);
     }
 
-    private static async Task<IResult> Create([FromBody] CreateTaskRequest request,
-        [FromServices] IValidator<CreateTaskRequest> validator, [FromServices] ITaskService service)
+    private static async Task<IResult> Create([FromBody] CreateTaskCommand command,
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var validationResult = await validator.ValidateAsync(request);
+        var request = new CreateTaskCommand(command.Title, command.Description);
 
-        if (!validationResult.IsValid)
-            return Results.ValidationProblem(validationResult.ToDictionary());
-
-        var taskDto = new TaskModel(
-            request.Title,
-            request.Description);
-
-        var task = await service.CreateAsync(taskDto);
-        return Results.Created($"/task/Id", task);
+        var id = await sender.Send(request, ct);
+        return Results.CreatedAtRoute("GetTaskById", new { id });
     }
 
-    private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] CreateTaskRequest request,
-        [FromServices] IValidator<CreateTaskRequest> validator, [FromServices] ITaskService service)
+    private static async Task<IResult> Update([FromRoute] Guid id, [FromBody] UpdateTaskCommand command,
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var validationResult = await validator.ValidateAsync(request);
+        var request = new UpdateTaskCommand(command.Id, command.Title, command.Description);
 
-        if (!validationResult.IsValid)
-            return Results.ValidationProblem(validationResult.ToDictionary());
-
-        var taskDto = new TaskModel(
-            request.Title,
-            request.Description);
-
-        await service.UpdateAsync(id, taskDto);
+        await sender.Send(request, ct);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ITaskService service)
+    private static async Task<IResult> Delete([FromRoute] Guid id, [FromServices] ISender sender, CancellationToken ct)
     {
-        var deleted = await service.DeleteAsync(id);
+        var request = new DeleteTaskCommand(id);
+        var deleted = await sender.Send(request, ct);
         return deleted ? Results.NoContent() : Results.NotFound();
     }
 
@@ -79,7 +70,7 @@ public static class TaskRoute
         var task = await service.RemoveTagAsync(taskId, tagId);
         return Results.Ok(task);
     }
-    
+
     private static async Task<IResult> AddTag([FromRoute] Guid taskId, [FromRoute] Guid tagId,
         [FromServices] ITaskService service)
     {

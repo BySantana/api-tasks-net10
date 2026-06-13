@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using TasksToDo.Application.DTOs.Requests;
 
-namespace TasksToDo.Application.Validators;
+namespace TasksToDo.Application.Services.Task.Commands.CreateTask;
 
-public class CreateTagRequestValidator : AbstractValidator<CreateTagRequest>
+public class CreateTaskValidator : AbstractValidator<CreateTaskCommand>
 {
-    public CreateTagRequestValidator()
+    public CreateTaskValidator()
     {
         RuleFor(request => request.Title)
             .NotEmpty().WithMessage("Title is required")
