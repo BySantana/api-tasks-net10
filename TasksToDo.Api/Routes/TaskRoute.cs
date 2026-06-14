@@ -1,14 +1,13 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
-using TasksToDo.Application.Interfaces.Services;
 using TasksToDo.Application.Services.Task.Commands.AddTagToTask;
 using TasksToDo.Application.Services.Task.Commands.CreateTask;
 using TasksToDo.Application.Services.Task.Commands.DeleteTask;
 using TasksToDo.Application.Services.Task.Commands.RemoveTagFromTask;
 using TasksToDo.Application.Services.Task.Commands.UpdateTask;
-using TasksToDo.Domain.Models;
+using TasksToDo.Application.Services.Task.Queries.GetAllTasks;
+using TasksToDo.Application.Services.Task.Queries.GetTaskById;
 
 namespace TasksToDo.Routes;
 
@@ -27,15 +26,18 @@ public static class TaskRoute
         group.MapPut("/Tag/Remove/{taskId:guid}&{tagId:guid}", RemoveTag);
     }
 
-    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ITaskService service)
+    private static async Task<IResult> GetAll([AsParameters] PagedRequest request, [FromServices] ISender sender,
+        CancellationToken ct)
     {
-        var tasks = await service.GetAllAsync(request);
+        var query = new GetAllTasksQuery(request);
+        var tasks = await sender.Send(query, ct);
         return Results.Ok(tasks);
     }
 
-    private static async Task<IResult> GetById([FromRoute] Guid id, [FromServices] ITaskService service)
+    private static async Task<IResult> GetById([FromRoute] Guid id, [FromServices] ISender sender, CancellationToken ct)
     {
-        var task = await service.GetByIdAsync(id);
+        var query = new GetTaskByIdQuery(id);
+        var task = await sender.Send(query, ct);
         return task == null
             ? Results.NotFound()
             : Results.Ok(task);

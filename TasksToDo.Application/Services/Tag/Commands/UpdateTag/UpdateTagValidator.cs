@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using TasksToDo.Application.DTOs.Requests;
+using TasksToDo.Application.Services.Tag.Commands.CreateTag;
 
 namespace TasksToDo.Application.Services.Tag.Commands.UpdateTag;
 
-public class UpdateTagValidator : AbstractValidator<CreateTagRequest>
+public class UpdateTagValidator : AbstractValidator<CreateTagCommand>
 {
     public UpdateTagValidator()
     {
