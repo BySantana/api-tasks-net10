@@ -12,6 +12,7 @@ public class TaskService(IApplicationDbContext context) : ITaskService
     private readonly IApplicationDbContext _context = context;
 
     private static TaskResponse Project(TaskModel t) => new(
+        t.Id,
         t.Title,
         t.Description,
         t.CreatedAt,
@@ -45,40 +46,6 @@ public class TaskService(IApplicationDbContext context) : ITaskService
             .Where(x => x.Id == id)
             .Select(x => Project(x))
             .FirstOrDefaultAsync();
-    }
-
-    public async Task<TaskResponse> CreateAsync(TaskModel taskModel)
-    {
-        await _context.Tasks.AddAsync(taskModel);
-        await _context.SaveChangesAsync();
-
-        return Project(taskModel);
-    }
-
-    public async Task<TaskResponse?> UpdateAsync(Guid id, TaskModel model)
-    {
-        var task = await _context.Tasks.FindAsync(id);
-
-        if (task is null)
-            return null;
-
-        task.ChangeTask(model.Title, model.Description);
-        await _context.SaveChangesAsync();
-
-        return Project(task);
-    }
-
-    public async Task<bool> DeleteAsync(Guid id)
-    {
-        var task = await _context.Tasks.FindAsync(id);
-
-        if (task is null)
-            return false;
-
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return true;
     }
 
     public async Task<TaskResponse> AddTagAsync(Guid taskId, Guid tagId)

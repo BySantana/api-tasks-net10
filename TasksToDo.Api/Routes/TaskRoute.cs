@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TasksToDo.Application.DTOs.Requests;
 using TasksToDo.Application.Interfaces.Services;
+using TasksToDo.Application.Services.Task.Commands.AddTagToTask;
 using TasksToDo.Application.Services.Task.Commands.CreateTask;
 using TasksToDo.Application.Services.Task.Commands.DeleteTask;
+using TasksToDo.Application.Services.Task.Commands.RemoveTagFromTask;
 using TasksToDo.Application.Services.Task.Commands.UpdateTask;
 using TasksToDo.Domain.Models;
 
@@ -65,16 +67,18 @@ public static class TaskRoute
     }
 
     private static async Task<IResult> RemoveTag([FromRoute] Guid taskId, [FromRoute] Guid tagId,
-        [FromServices] ITaskService service)
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var task = await service.RemoveTagAsync(taskId, tagId);
+        var request = new RemoveTagFromTaskCommand(taskId, tagId);
+        var task = await sender.Send(request, ct);
         return Results.Ok(task);
     }
 
     private static async Task<IResult> AddTag([FromRoute] Guid taskId, [FromRoute] Guid tagId,
-        [FromServices] ITaskService service)
+        [FromServices] ISender sender, CancellationToken ct)
     {
-        var task = await service.AddTagAsync(taskId, tagId);
+        var request = new AddTagToTaskCommand(taskId, tagId);
+        var task = await sender.Send(request, ct);
         return Results.Ok(task);
     }
 }

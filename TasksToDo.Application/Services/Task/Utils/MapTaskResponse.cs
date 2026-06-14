@@ -6,6 +6,7 @@ namespace TasksToDo.Application.Services.Task.Utils;
 public static class MapTaskResponse
 {
     public static TaskResponse Project(TaskModel t) => new(
+        t.Id,
         t.Title,
         t.Description,
         t.CreatedAt,
