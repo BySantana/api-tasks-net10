@@ -3,4 +3,5 @@
   <Project Path="TasksToDo.Application/TasksToDo.Application.csproj" />
   <Project Path="TasksToDo.Domain/TasksToDo.Domain.csproj" />
   <Project Path="TasksToDo.Infrastructure/TasksToDo.Infrastructure.csproj" />
+  <Project Path="TasksToDo.Tests/TasksToDo.Tests.csproj" />
 </Solution>

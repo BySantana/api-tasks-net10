@@ -59,10 +59,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
- 
-builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskRequestValidator>();
 
-builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IApplicationDbContext, AppDbContext>();
 
