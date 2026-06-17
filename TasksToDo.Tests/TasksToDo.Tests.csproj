@@ -22,4 +22,10 @@
       <ProjectReference Include="..\TasksToDo.Domain\TasksToDo.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Application\Tag\Commands\" />
+      <Folder Include="Application\Tag\Queries\" />
+      <Folder Include="Application\Validators\" />
+    </ItemGroup>
+
 </Project>

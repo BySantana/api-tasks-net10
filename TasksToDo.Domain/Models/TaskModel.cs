@@ -34,11 +34,17 @@ public class TaskModel : BaseEntity
     public void AddTag(TagModel tag)
     {
         ArgumentNullException.ThrowIfNull(tag);
+
         if (!_tags.Contains(tag))
             _tags.Add(tag);
     }
 
-    public void RemoveTag(TagModel tag) => _tags.Remove(tag);
+    public void RemoveTag(TagModel tag)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+
+        _tags.Remove(tag);
+    }
 
     #endregion
 }
