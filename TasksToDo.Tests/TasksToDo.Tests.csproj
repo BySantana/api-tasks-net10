@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.4"/>
+        <PackageReference Include="FluentValidation" Version="12.1.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/>
         <PackageReference Include="xunit" Version="2.9.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4"/>
@@ -19,13 +20,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TasksToDo.Application\TasksToDo.Application.csproj" />
       <ProjectReference Include="..\TasksToDo.Domain\TasksToDo.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Application\Tag\Commands\" />
       <Folder Include="Application\Tag\Queries\" />
-      <Folder Include="Application\Validators\" />
     </ItemGroup>
 
 </Project>
