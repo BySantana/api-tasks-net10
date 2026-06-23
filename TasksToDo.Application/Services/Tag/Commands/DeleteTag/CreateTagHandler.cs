@@ -3,7 +3,7 @@ using TasksToDo.Application.Abstractions;
 
 namespace TasksToDo.Application.Services.Tag.Commands.DeleteTag;
 
-public class CreateTagHandler(IApplicationDbContext context) : IRequestHandler<DeleteTagCommand, bool>
+public class DeleteTagHandler(IApplicationDbContext context) : IRequestHandler<DeleteTagCommand, bool>
 {
     private readonly IApplicationDbContext _context = context;
     
